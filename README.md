@@ -94,6 +94,8 @@ PersonalKnowledgeBaseCreator/
 ├── setup.sh               ← macOS/Linux installer
 ├── setup.ps1              ← Windows installer
 ├── lint_graph.js          ← zero-dependency graph linter (Node.js)
+├── raw/                   ← drop source files here (gitignored, stays local)
+├── output/                ← generated reports land here (gitignored, stays local)
 ├── skills/
 │   ├── compile-wiki/SKILL.md
 │   ├── ask-wiki/SKILL.md
