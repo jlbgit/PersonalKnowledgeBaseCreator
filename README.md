@@ -1,4 +1,4 @@
-# Personal Knowledge Base Creator (v0.1.0)
+# Personal Knowledge Base Creator (v1.0.0)
 
 A template for building your own **compounding, AI-maintained personal knowledge base** — inspired by [Andrej Karpathy's LLM Wiki pattern](https://x.com/karpathy/status/2039805659525644595). Drop in raw notes, papers, or articles and let your AI assistant (Cursor, Claude Code, or VS Code/Copilot) transform them into a structured, interlinked wiki you can explore visually in [Obsidian](https://obsidian.md).
 

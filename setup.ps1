@@ -27,7 +27,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$VERSION = "0.1.0"
+$VERSION = "1.0.0"
 $RepoDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $Skills = @("compile-wiki", "ask-wiki", "lint-wiki")
 
