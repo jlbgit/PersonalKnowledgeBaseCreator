@@ -104,6 +104,26 @@ PersonalKnowledgeBaseCreator/
     └── .obsidian/         ← pre-configured vault settings
 ```
 
+## Examples
+
+Once your wiki is populated, `/ask-wiki` lets you query across everything you've read. Here are some questions to try — swap in your own topics:
+
+> *"Summarize the main approaches to building energy optimization I've collected. What gaps am I missing?"*
+
+> *"How do multi-agent LLM systems relate to the agentic AI patterns I've been reading about?"*
+
+> *"Which papers or sources connect Model Predictive Control to machine learning methods?"*
+
+> *"Give me a research briefing on token optimization techniques across all my notes."*
+
+> *"What do I know about confounding bias and causal inference? How does it connect to double machine learning?"*
+
+Each query saves a report to `output/` and feeds new insights back into the wiki — so the knowledge base keeps compounding.
+
+The graph below shows an example knowledge graph in Obsidian (you can also use other tools). Node colors represent topic clusters; edges are `[[wiki-links]]` extracted by the AI.
+
+![Example knowledge graph](example/example_knowledge_graph.png)
+
 ## Uninstalling
 
 ```bash
