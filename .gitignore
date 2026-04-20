@@ -1,6 +1,8 @@
-# Ignore raw data and generated output folders
-raw/
-output/
+# Ignore raw data and generated output folder contents (dirs tracked via .gitkeep)
+raw/*
+output/*
+!raw/.gitkeep
+!output/.gitkeep
 
 # User-generated wiki content is handled by wiki/.gitignore
 
