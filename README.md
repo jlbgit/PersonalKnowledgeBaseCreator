@@ -127,3 +127,5 @@ MIT — see [LICENSE](LICENSE).
 ## Disclaimer
 
 Please review the [DISCLAIMER.md](DISCLAIMER.md) file for important legal information regarding the use of this experimental software.
+
+> *tested on Cursor only as of April 2026
