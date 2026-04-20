@@ -1,0 +1,13 @@
+# Ignore all user-generated wiki content (personal knowledge stays local).
+# Only the skeleton files that ship with the template are tracked.
+*
+!.gitignore
+!index.md
+!log.md
+!.obsidian/
+!.obsidian/**
+
+# Obsidian workspace state (changes constantly based on UI state)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/graph.json

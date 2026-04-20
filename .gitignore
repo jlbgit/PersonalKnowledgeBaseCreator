@@ -1,0 +1,17 @@
+# Ignore raw data and generated output folders
+raw/
+output/
+
+# User-generated wiki content is handled by wiki/.gitignore
+
+# Node modules (for lint_graph.js dependencies, if any are added in the future)
+node_modules/
+package-lock.json
+
+# Common system and environment files
+.DS_Store
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
