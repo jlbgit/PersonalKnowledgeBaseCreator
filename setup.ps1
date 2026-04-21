@@ -30,7 +30,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$VERSION = "1.1.2"
+$VERSION = "1.1.3"
 $RepoDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $Skills = @("compile-wiki", "ask-wiki", "lint-wiki")
 
