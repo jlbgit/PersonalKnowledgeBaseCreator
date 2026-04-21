@@ -16,6 +16,14 @@ function normalize(name) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/).sort().join(' ');
 }
 
+/** True if s is YYYY-MM-DD and a valid calendar date (UTC). */
+function isValidISODate(s) {
+  if (typeof s !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+  const [y, m, d] = s.split('-').map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
+}
+
 // --- 1. Discover pages ---
 
 const allFiles = walkMd(wikiDir);
@@ -47,6 +55,21 @@ for (const [name, data] of pages.entries()) {
         frontmatterIssues.push(`${data.file}: missing 'authors:' in frontmatter`);
       if (!/tags:/i.test(fm))
         frontmatterIssues.push(`${data.file}: missing 'tags:' in frontmatter`);
+      if (!/date_added:/i.test(fm)) {
+        frontmatterIssues.push(`${data.file}: missing 'date_added:' in frontmatter`);
+      } else {
+        const dateLine = fm.match(/^\s*date_added:\s*(.+)$/mi);
+        if (!dateLine) {
+          frontmatterIssues.push(`${data.file}: 'date_added:' present but value unreadable`);
+        } else {
+          const rawVal = dateLine[1].trim().replace(/^["']|["']$/g, '');
+          if (!isValidISODate(rawVal)) {
+            frontmatterIssues.push(
+              `${data.file}: 'date_added:' must be ISO date YYYY-MM-DD (got: ${rawVal || '(empty)'})`
+            );
+          }
+        }
+      }
     }
   }
 
