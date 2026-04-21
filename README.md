@@ -104,6 +104,33 @@ This symlinks the skills (if needed) and creates in **that** directory: `raw/`, 
 | `ask-wiki` | `/ask-wiki` | Answers questions using only your wiki → saves report to `output/` → re-integrates insights |
 | `lint-wiki` | `/lint-wiki` | Health check: dangling links, orphan pages, duplicate topics, index sync, new topic suggestions |
 
+## Scale & Practical Limits
+
+> **TL;DR:** This pattern works best with **~100 raw sources** producing **~hundreds of wiki pages** — roughly 400,000 words of compiled knowledge. Modern LLMs on the Cursor plan handle this comfortably. Beyond ~300 sources the index starts getting heavy; at 500+ you should consider batching or adding a search layer.
+
+These numbers come directly from Karpathy's original gist — *"this works surprisingly well at moderate scale (~100 sources, ~hundreds of pages)"* — and are validated by secondary analyses that estimate the resulting wiki at roughly **400,000 words** (~500,000–550,000 tokens at ~1.3 tokens per word).
+
+### Why the pattern doesn't need everything in one context window
+
+The skills use an **index-first** strategy: at query or lint time the LLM reads `index.md` (a compact catalog of all pages) and then drills into the specific pages it needs. The full wiki never has to fit in context at once — only the index plus a handful of pages do. This is why 400,000 words of accumulated knowledge is achievable even on models with 200K-token windows.
+
+### Practical limits for Cursor plan LLMs (Sonnet, Opus, GPT-5.4, Kimi, Composer…)
+
+| Dimension | Sweet spot | Soft ceiling | What degrades |
+|---|---|---|---|
+| **Files per `/compile-wiki` run** | 5–15 files | ~20–30 files | Response quality and accuracy drop as the agent juggles too many new sources at once |
+| **Total sources in `raw/`** (accumulated over time) | ~100 | ~200–300 | `index.md` grows large and slow to scan |
+| **Single file size** | < 30,000 words (~40K tokens) | < 50,000 words (~65K tokens) | Larger files may not leave enough context for the skill instructions + wiki index |
+| **Total wiki pages** | ~100–200 pages | ~300–400 pages | `index.md` starts consuming significant context, leaving less room for reasoning |
+
+> **Individual file sizes:** Research papers (5,000–15,000 words) and web articles work perfectly. If you drop in a book, thesis, or large report, split it into chapters or sections first — anything over ~50,000 words in a single file risks crowding out the context window during compilation.
+
+> **Batch your drops:** Rather than adding 50 files at once, add 10–20 at a time and run `/compile-wiki` between batches. The skill is designed for incremental ingestion — it tracks what has already been processed in `log.md`.
+
+### When to consider adding search
+
+If your wiki grows past ~300 pages and `/ask-wiki` queries feel slow or imprecise, it may be time to add a lightweight search layer (e.g. [qmd](https://github.com/tobi/qmd), which Karpathy recommends) rather than migrating to a full RAG pipeline. The underlying Markdown files stay the same — you're just adding a tool that lets the LLM pre-filter which pages to load.
+
 ## Folder Structure
 
 ```
