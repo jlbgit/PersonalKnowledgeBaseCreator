@@ -102,7 +102,7 @@ This symlinks the skills (if needed) and creates in **that** directory: `raw/`, 
 |---|---|---|
 | `compile-wiki` | `/compile-wiki` | Processes new `raw/` files → creates/updates wiki pages → updates index and log |
 | `ask-wiki` | `/ask-wiki` | Answers questions using only your wiki → saves report to `output/` → re-integrates insights |
-| `lint-wiki` | `/lint-wiki` | Health check: dangling links, orphan pages, duplicate topics, index sync, new topic suggestions |
+| `lint-wiki` | `/lint-wiki` | Health check: frontmatter validation, dangling links, orphan pages, duplicate topics, index sync, contradiction detection, new topic suggestions |
 
 ## Scale & Practical Limits
 

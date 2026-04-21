@@ -42,8 +42,10 @@ To uninstall: `./setup.sh --uninstall cursor` or `.\setup.ps1 -Uninstall cursor`
 
 ### Frontmatter (YAML)
 Every topic `.md` file MUST have valid YAML frontmatter including:
-- **`authors:`** — Plain text (list or string). Do not wrap authors in `[[ ]]`.
-- **`tags:`** — At least one tag in lowercase-dash format (e.g., `agentic-ai`, `rag`).
+- **`title:`** — Required. The original title of the primary source (paper title, article headline, repo name, etc.). For synthesized concept pages without a single primary source, use the wiki page title. Do not wrap in `[[ ]]`.
+- **`type:`** — Required. The kind of source. Must be one of: `paper`, `preprint`, `article`, `blog-post`, `github-repo`, `book`, `video`, `documentation`, `concept` (for synthesized pages without one primary source).
+- **`authors:`** — Required. Plain text (list or string). Do not wrap authors in `[[ ]]`.
+- **`tags:`** — Required. At least one tag in lowercase-dash format (e.g., `agentic-ai`, `rag`).
 - **`date_added:`** — Required. ISO 8601 date (`YYYY-MM-DD`) when this entry was added to the wiki (not the source publication date).
 - **`url:`** — Optional. Primary source URL for quick access and Obsidian Dataview (webpage, article, arXiv, DOI link). Omit for synthesized concept pages without one main source.
 - **`methods:`** — Optional. List of technologies, tools, frameworks, or experimental/lab methods named in the source (e.g., Neo4j, FastAPI, MCP). Omit when not applicable.
@@ -54,7 +56,7 @@ Every topic `.md` file MUST have valid YAML frontmatter including:
 - Add a **`## Key Takeaways`** section immediately after the summary: up to 10 bullets with concrete concepts, results, or takeaways (not vague repeats of the summary).
 - Add further sections as needed (e.g. Ecosystem, Challenges) with `[[wiki-links]]` to related topics.
 - End with a **`## Sources`** section listing citations. Each entry MUST include at least one **clickable** markdown link to the primary URL (web, DOI, arXiv, etc.), e.g. `*Title* by Author — [arXiv](https://arxiv.org/abs/...) | [DOI](https://doi.org/...)`.
-- Link related topics using Obsidian's `[[topic-name]]` format to build the knowledge graph.
+- **Linking philosophy:** Use Obsidian's `[[topic-name]]` format generously to build a rich knowledge graph. Link whenever two topics are genuinely related — e.g., a building control page should link to related energy, simulation, and ML topics. Cross-domain links are encouraged when the connection is real (e.g., a paper on building control that uses knowledge graphs should link to both domains). The text inside `[[ ]]` must match the target page's filename (without `.md`); before writing a link, ensure the target page exists in `wiki/` or will be created in the same compile run. If a related concept deserves linking but has no page yet, create a brief stub page rather than leaving the link dangling or omitting it.
 - Maintain an `index.md` in `wiki/` that lists every topic with a one-line description (Do NOT use `[[wiki-links]]` in the index to prevent it from becoming a massive, cluttered hub node in Obsidian).
 - Maintain a `log.md` in `wiki/` to track which raw files have been processed and when.
 - When new raw sources are added, synthesize and update the relevant wiki articles without destroying existing knowledge.
@@ -73,7 +75,7 @@ Every topic `.md` file MUST have valid YAML frontmatter including:
 ### 1. Ingesting New Files (Daily/Weekly)
 Whenever you drop new `.md`, `.pdf`, or text files into the `raw/` folder:
 👉 **Run: `/compile-wiki`**
-- *What it does:* The agent checks `wiki/log.md`, reads only the **unprocessed** files, extracts their topics (and authors!), creates/updates your `.md` pages in `wiki/`, and links them to your existing notes.
+- *What it does:* The agent checks `wiki/log.md`, reads only the **unprocessed** files, extracts their key concepts, metadata (title, type, authors, methods, URLs), creates/updates topic pages in `wiki/` with extended summaries and key takeaways, builds `[[wiki-links]]` across related topics, and updates the index and log.
 
 ### 2. Querying the Knowledge Base (Ongoing)
 When you want to extract insights, find gaps, or generate a report based on your compiled notes:
@@ -83,4 +85,4 @@ When you want to extract insights, find gaps, or generate a report based on your
 ### 3. Graph Maintenance (Monthly)
 After running `/compile-wiki` a few times, or if your Obsidian graph starts getting messy/redundant:
 👉 **Run: `/lint-wiki`**
-- *What it does:* The agent scans the entire `wiki/` directory (ignoring `raw/`) to clean up the graph. It merges duplicate topics (e.g., "Neural Networks" and "Neural Nets"), fixes broken links, spots contradictions, and suggests 3 new topics to fill gaps in your knowledge graph.
+- *What it does:* The agent runs `lint_graph.js` to validate frontmatter and graph structure, then scans the entire `wiki/` directory (ignoring `raw/`) to clean up the graph. It merges duplicate topics (e.g., "Neural Networks" and "Neural Nets"), fixes broken links, spots contradictions, and suggests 3 new topics to fill gaps in your knowledge graph.
