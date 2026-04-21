@@ -39,9 +39,22 @@ To uninstall: `./setup.sh --uninstall cursor` or `.\setup.ps1 -Uninstall cursor`
 - **Path resolution:** Each skill reads `wiki-config.md` first from the **workspace root** (project-local wiki), then from the **platform skills directory** (global wiki). Those files list absolute paths for **Wiki root**, **Wiki folder**, **Raw folder**, and **Output folder** so the same skills work from any open project.
 
 ## Wiki Rules
-- Every extracted topic gets its own `.md` file in `wiki/`.
-- Every wiki file MUST start with a one-paragraph summary.
-- Link related topics to each other using Obsidian's `[[topic-name]]` format to build the knowledge graph.
+
+### Frontmatter (YAML)
+Every topic `.md` file MUST have valid YAML frontmatter including:
+- **`authors:`** — Plain text (list or string). Do not wrap authors in `[[ ]]`.
+- **`tags:`** — At least one tag in lowercase-dash format (e.g., `agentic-ai`, `rag`).
+- **`date_added:`** — Required. ISO 8601 date (`YYYY-MM-DD`) when this entry was added to the wiki (not the source publication date).
+- **`url:`** — Optional. Primary source URL for quick access and Obsidian Dataview (webpage, article, arXiv, DOI link). Omit for synthesized concept pages without one main source.
+- **`methods:`** — Optional. List of technologies, tools, frameworks, or experimental/lab methods named in the source (e.g., Neo4j, FastAPI, MCP). Omit when not applicable.
+
+### Page structure
+- Every extracted topic gets its own `.md` file in `wiki/` (thematic subfolders encouraged).
+- After the `# Title` heading, write an **extended summary**: 2–4 paragraphs (~250–300 words, roughly up to half an A4 page) covering *what* the topic is, *why* it matters, and *how* it works at a high level.
+- Add a **`## Key Takeaways`** section immediately after the summary: up to 10 bullets with concrete concepts, results, or takeaways (not vague repeats of the summary).
+- Add further sections as needed (e.g. Ecosystem, Challenges) with `[[wiki-links]]` to related topics.
+- End with a **`## Sources`** section listing citations. Each entry MUST include at least one **clickable** markdown link to the primary URL (web, DOI, arXiv, etc.), e.g. `*Title* by Author — [arXiv](https://arxiv.org/abs/...) | [DOI](https://doi.org/...)`.
+- Link related topics using Obsidian's `[[topic-name]]` format to build the knowledge graph.
 - Maintain an `index.md` in `wiki/` that lists every topic with a one-line description (Do NOT use `[[wiki-links]]` in the index to prevent it from becoming a massive, cluttered hub node in Obsidian).
 - Maintain a `log.md` in `wiki/` to track which raw files have been processed and when.
 - When new raw sources are added, synthesize and update the relevant wiki articles without destroying existing knowledge.
