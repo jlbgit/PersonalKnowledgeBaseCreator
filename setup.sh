@@ -289,10 +289,10 @@ if [ "$SCOPE" = "global" ]; then
     echo "  1. Edit AGENTS.md and fill in your focus areas"
     echo "  2. Drop files into raw/"
     echo "  3. Open in your AI assistant and say: 'Compile the wiki'"
-    echo "  4. Browse wiki/ in Obsidian"
+    echo "  4. Browse wiki/ in any editor (Obsidian optional — open wiki/ as a vault for graph view)"
 else
     echo "  1. Edit AGENTS.md in this directory and fill in your focus areas"
     echo "  2. Drop files into raw/"
     echo "  3. Open in your AI assistant and say: 'Compile the wiki'"
-    echo "  4. Browse wiki/ in Obsidian"
+    echo "  4. Browse wiki/ in any editor (Obsidian optional — open wiki/ as a vault for graph view)"
 fi

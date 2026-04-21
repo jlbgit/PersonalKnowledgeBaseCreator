@@ -371,11 +371,11 @@ if ($scope -eq "global") {
     Write-Host "  1. Edit AGENTS.md and fill in your focus areas"
     Write-Host "  2. Drop files into raw/"
     Write-Host '  3. Open in your AI assistant and say: "Compile the wiki"'
-    Write-Host "  4. Browse wiki/ in Obsidian"
+    Write-Host "  4. Browse wiki/ in any editor (Obsidian optional -- open wiki/ as a vault for graph view)"
 }
 else {
     Write-Host "  1. Edit AGENTS.md in this directory and fill in your focus areas"
     Write-Host "  2. Drop files into raw/"
     Write-Host '  3. Open in your AI assistant and say: "Compile the wiki"'
-    Write-Host "  4. Browse wiki/ in Obsidian"
+    Write-Host "  4. Browse wiki/ in any editor (Obsidian optional -- open wiki/ as a vault for graph view)"
 }
