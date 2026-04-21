@@ -51,11 +51,31 @@ for (const [name, data] of pages.entries()) {
       frontmatterIssues.push(`${data.file}: unclosed frontmatter block`);
     } else {
       const fm = content.slice(3, fmEnd);
-      if (!/authors:/i.test(fm))
+
+      if (!/^title:/im.test(fm))
+        frontmatterIssues.push(`${data.file}: missing 'title:' in frontmatter`);
+
+      if (!/^type:/im.test(fm)) {
+        frontmatterIssues.push(`${data.file}: missing 'type:' in frontmatter`);
+      } else {
+        const typeLine = fm.match(/^\s*type:\s*(.+)$/mi);
+        const VALID_TYPES = new Set([
+          'paper', 'preprint', 'article', 'blog-post',
+          'github-repo', 'book', 'video', 'documentation', 'concept',
+        ]);
+        const rawType = typeLine ? typeLine[1].trim().replace(/^["']|["']$/g, '') : '';
+        if (!VALID_TYPES.has(rawType)) {
+          frontmatterIssues.push(
+            `${data.file}: 'type:' must be one of [${[...VALID_TYPES].join(', ')}] (got: ${rawType || '(empty)'})`
+          );
+        }
+      }
+
+      if (!/^authors:/im.test(fm))
         frontmatterIssues.push(`${data.file}: missing 'authors:' in frontmatter`);
-      if (!/tags:/i.test(fm))
+      if (!/^tags:/im.test(fm))
         frontmatterIssues.push(`${data.file}: missing 'tags:' in frontmatter`);
-      if (!/date_added:/i.test(fm)) {
+      if (!/^date_added:/im.test(fm)) {
         frontmatterIssues.push(`${data.file}: missing 'date_added:' in frontmatter`);
       } else {
         const dateLine = fm.match(/^\s*date_added:\s*(.+)$/mi);
@@ -73,8 +93,8 @@ for (const [name, data] of pages.entries()) {
     }
   }
 
-  // Wiki-link extraction
-  const linkRegex = /\[\[(.*?)\]\]/g;
+  // Wiki-link extraction (skip links inside inline code backticks)
+  const linkRegex = /(?<!`)\[\[(.*?)\]\](?!`)/g;
   let match;
   while ((match = linkRegex.exec(content)) !== null) {
     const target = match[1];

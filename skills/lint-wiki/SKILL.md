@@ -26,7 +26,7 @@ When the user asks you to run a health check, lint the wiki, or clean up:
    (the path labelled **Wiki root** in wiki-config — the directory that contains
    `lint_graph.js` and a `wiki/` subfolder). This zero-dependency script
    programmatically checks dangling `[[wiki-links]]`, orphan pages, frontmatter
-   validity (`authors:`/`tags:`/`date_added:`), index sync, and possible duplicate page names.
+   validity (`title:`/`type:`/`authors:`/`tags:`/`date_added:`), index sync, and possible duplicate page names.
    Use its output to focus your manual review on the flagged issues rather than
    reading every file from scratch.
 
@@ -41,8 +41,10 @@ When the user asks you to run a health check, lint the wiki, or clean up:
 
 4. **Fix Frontmatter Issues:**
    For any pages flagged by the script, ensure valid YAML frontmatter containing:
-   - `authors:` — plain text, never wrapped in `[[ ]]`.
-   - `tags:` — at least one tag in lowercase-dash format.
+   - `title:` — required; the original source title (or wiki page title for `concept` pages).
+   - `type:` — required; must be one of `paper`, `preprint`, `article`, `blog-post`, `github-repo`, `book`, `video`, `documentation`, `concept`.
+   - `authors:` — required; plain text, never wrapped in `[[ ]]`.
+   - `tags:` — required; at least one tag in lowercase-dash format.
    - `date_added:` — required; ISO 8601 date `YYYY-MM-DD` (when the entry was added to the wiki).
    - **`url:` (manual check):** If a page has a **`## Sources`** section with **exactly one** bullet and the page is clearly sourced from that item (not a pure synthesis of many ideas), it should usually have a `url:` in frontmatter matching the primary link — flag missing `url:` for human review.
 
