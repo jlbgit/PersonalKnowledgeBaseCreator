@@ -11,6 +11,16 @@ This skill instructs the agent to compile raw notes into the compounding knowled
 
 When the user asks you to update the wiki, process new files, or compile the wiki:
 
+0. **Resolve Paths (always do this first):**
+   First, check if a `wiki-config.md` exists in the current workspace root
+   (this indicates a project-local wiki). If not found, read
+   `wiki-config.md` from the same directory as this skill (e.g.,
+   `~/.cursor/skills/wiki-config.md`) for the global wiki. The file
+   contains four absolute paths labelled **Wiki root**, **Wiki folder**,
+   **Raw folder**, and **Output folder**. Use these paths everywhere below
+   instead of the relative `wiki/`, `raw/`, and `output/` defaults.
+   If neither file exists, fall back to relative paths from the workspace root.
+
 1. **Check for Unprocessed Files:**
    Read `wiki/log.md`. Identify any files in `raw/` that have not yet been logged as processed. Use your native capability to read the text of these files (including PDFs).
 
