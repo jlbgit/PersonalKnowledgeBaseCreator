@@ -24,6 +24,17 @@ When the user asks you to update the wiki, process new files, or compile the wik
 1. **Check for Unprocessed Files:**
    Read `wiki/log.md`. Identify any files in `raw/` that have not yet been logged as processed. Use your native capability to read the text of these files (including PDFs).
 
+1a. **Decide on Batch Size (do this before reading any file content):**
+   Count the unprocessed files and estimate load:
+   - **Small load (≤ 3 files, all appear short/lightweight):** Process all in one pass — skip to step 2.
+   - **Medium load (4–8 files, or any single file is a long PDF/article):** Process in batches of **3 files** per run.
+   - **Large load (> 8 files, or multiple long documents):** Process in batches of **2 files** per run.
+
+   When batching:
+   - Pick the **oldest unprocessed files first** (by filename or modification date).
+   - Process only the current batch (steps 2–4) and fully complete it (wiki pages written, index updated, log appended) before stopping.
+   - After finishing the batch, **clearly tell the user** how many files were processed, how many remain, and ask them to run compile-wiki again to continue. Do NOT attempt to process the next batch in the same turn.
+
 2. **Extract Key Concepts:**
    For each new file, extract the core ideas, processes, abstract concepts, and domains (e.g., "building HVAC control", "token minimization"). Focus the primary organization and `[[wiki-links]]` on topics, but do extract and record the author(s) of the source material as plain text (e.g., to include in YAML frontmatter or a "Sources" section; NEVER wrap authors in `[[ ]]` so they don't become nodes in the graph). Also, generate 1-3 broad categorizing `tags` (e.g., `knowledge-management`, `agentic-ai`, `rag`) to include in the YAML frontmatter.
    Capture **source URLs** from the raw material when available (article link, DOI, arXiv, blog URL) for frontmatter `url:` and for clickable links in `## Sources`. Extract **methods** when relevant: technologies, frameworks, tools, lab or experimental techniques (e.g., FastAPI, Neo4j, MCP, three-point bending test) for optional YAML `methods:`.
