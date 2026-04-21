@@ -1,14 +1,23 @@
 # Personal Knowledge Base Creator (v1.1.2)
 
-A template for building your own **compounding, AI-maintained personal knowledge base** — inspired by [Andrej Karpathy's LLM Wiki pattern](https://x.com/karpathy/status/2039805659525644595). Drop in raw notes, papers, or articles and let your AI assistant (Cursor, Claude Code, or VS Code/Copilot) transform them into a structured, interlinked wiki you can explore visually in [Obsidian](https://obsidian.md).
+A template for building your own **compounding, AI-maintained personal knowledge base** — inspired by [Andrej Karpathy's LLM Wiki pattern](https://x.com/karpathy/status/2039805659525644595). Drop in raw notes, papers, or articles and let your AI assistant (Cursor, Claude Code, or VS Code/Copilot) transform them into a structured, interlinked wiki of plain Markdown files you can browse in any editor.
 
 ## What You Get
 
-- **3 AI skills** — `compile-wiki`, `ask-wiki`, and `lint-wiki` — that run directly inside your IDE
-- **One-command setup** — symlink skills into your AI platform's directory, with **global** (default) or **local** scope
-- **Zero external dependencies** — plain Markdown files, no databases, no vector stores, no servers
-- **Obsidian-ready** — the `wiki/` folder is a pre-configured vault with graph view, backlinks, and tag pane
-- **Cross-platform** — works on macOS, Linux, and Windows; supports Cursor, Claude Code, and GitHub Copilot
+Most personal knowledge workflows stop at storage. This one goes further: the AI reads *across* your notes, finds connections, and builds a structured, cross-linked graph that grows with every new source you add.
+
+**No vector databases. No embeddings servers. No external API keys.** Everything runs inside your IDE — Cursor, Claude Code, or GitHub Copilot — using your existing subscription. Three slash commands, plain Markdown files, nothing else to configure.
+
+- **Skill-driven and IDE-native** — `/compile-wiki`, `/ask-wiki`, and `/lint-wiki` run as slash commands directly inside Cursor, Claude Code, or VS Code/Copilot; no separate tools or services
+- **No extra costs or API keys** — uses your existing IDE plan; nothing to sign up for or pay for separately
+- **Automatic linking** — `compile-wiki` identifies related concepts across all your notes and connects them with `[[wiki-links]]`, so the knowledge graph emerges without manual curation
+- **Graph-based retrieval** — `ask-wiki` follows wiki-links to traverse related pages; the LLM reads a compact index first, then drills into only the pages it needs — the full wiki never has to fit in context at once; works **locally** inside a single project or **globally** across all your projects, pointing at one central KB on your machine
+- **Token-efficient by design** — because only a relevant slice of the wiki is loaded per query, context stays lean even as the knowledge base grows; informal trials on a real personal KB showed roughly **~50% fewer tokens for small corpora** and up to **~90% reduction for large ones** compared to loading raw sources directly¹
+- **Private by default** — `raw/` and `output/` are gitignored; your notes stay on your machine
+- **Plain Markdown, no tooling required** — the `wiki/` folder is just files; open it in any editor, IDE, or note-taking app; an optional [Obsidian](https://obsidian.md) vault config is included for graph view and backlinks, but Obsidian is not required
+- **One-command setup** — symlink skills into your AI platform's directory with **global** (default) or **local** scope; works on macOS, Linux, and Windows
+
+> ¹ These figures come from informal trials on my real knowledge base, not a formal RAG evaluation. Results will vary with corpus size, source density, and topic overlap. A proper evaluation (precision/recall, RAG benchmarks) could be added later — contributions welcome.
 
 ## How It Works
 
@@ -18,7 +27,7 @@ raw/          ← you drop source files here (papers, articles, notes, PDFs)
   └─ /compile-wiki  (AI skill)
         │
         ▼
-wiki/         ← AI builds and maintains this (Obsidian vault)
+wiki/         ← AI builds and maintains this (plain Markdown)
   │
   ├─ /ask-wiki    → query your knowledge base, get reports saved to output/
   └─ /lint-wiki   → monthly health check: fix links, merge duplicates, suggest gaps
@@ -75,9 +84,9 @@ Open the repo in your AI assistant and say:
 
 > *"Compile the wiki"* — or use the slash command `/compile-wiki`
 
-### 5. Browse in Obsidian
+### 5. Explore your wiki
 
-Open the `wiki/` folder as an **Obsidian vault**. Use the Graph view to explore your knowledge network.
+The `wiki/` folder is plain Markdown — open it in any editor or IDE. If you use [Obsidian](https://obsidian.md), open it as a vault to get graph view, backlinks, and tag browsing out of the box.
 
 ## Using your wiki from other projects
 
@@ -148,10 +157,10 @@ PersonalKnowledgeBaseCreator/
 │   ├── compile-wiki/SKILL.md
 │   ├── ask-wiki/SKILL.md
 │   └── lint-wiki/SKILL.md
-└── wiki/                  ← Obsidian vault (AI-maintained)
+└── wiki/                  ← AI-maintained wiki (plain Markdown)
     ├── index.md           ← master topic index
     ├── log.md             ← processing audit trail
-    └── .obsidian/         ← pre-configured vault settings
+    └── .obsidian/         ← optional Obsidian vault config (graph view, backlinks)
 
 # After setup (not in this repo — paths depend on your machine):
 
@@ -175,7 +184,7 @@ Once your wiki is populated, `/ask-wiki` lets you query across everything you've
 
 Each query saves a report to `output/` and feeds new insights back into the wiki — so the knowledge base keeps compounding.
 
-The graph below shows an example knowledge graph in Obsidian (you can also use other tools). Node colors represent topic clusters; edges are `[[wiki-links]]` extracted by the AI.
+The graph below shows an example knowledge graph visualised in Obsidian. Node colors represent topic clusters; edges are `[[wiki-links]]` extracted by the AI.
 
 ![Example knowledge graph](example/example_knowledge_graph.png)
 
