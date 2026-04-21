@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="1.0.0"
+VERSION="1.1.0"
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 SKILLS=("compile-wiki" "ask-wiki" "lint-wiki")
 
