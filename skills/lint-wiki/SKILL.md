@@ -11,8 +11,24 @@ This skill performs the critical self-healing step for the LLM wiki, preventing 
 
 When the user asks you to run a health check, lint the wiki, or clean up:
 
+0. **Resolve Paths (always do this first):**
+   First, check if a `wiki-config.md` exists in the current workspace root
+   (this indicates a project-local wiki). If not found, read
+   `wiki-config.md` from the same directory as this skill (e.g.,
+   `~/.cursor/skills/wiki-config.md`) for the global wiki. The file
+   contains four absolute paths labelled **Wiki root**, **Wiki folder**,
+   **Raw folder**, and **Output folder**. Use these paths everywhere below
+   instead of the relative `wiki/`, `raw/`, and `output/` defaults.
+   If neither file exists, fall back to relative paths from the workspace root.
+
 1. **Run the Structural Pre-Scan:**
-   Execute `node lint_graph.js` from the project root. This zero-dependency script programmatically checks dangling `[[wiki-links]]`, orphan pages, frontmatter validity (`authors:`/`tags:`), index sync, and possible duplicate page names. Use its output to focus your manual review on the flagged issues rather than reading every file from scratch.
+   Execute `node lint_graph.js` with the shell working directory set to **Wiki root**
+   (the path labelled **Wiki root** in wiki-config — the directory that contains
+   `lint_graph.js` and a `wiki/` subfolder). This zero-dependency script
+   programmatically checks dangling `[[wiki-links]]`, orphan pages, frontmatter
+   validity (`authors:`/`tags:`), index sync, and possible duplicate page names.
+   Use its output to focus your manual review on the flagged issues rather than
+   reading every file from scratch.
 
 2. **Review the Flagged Pages:**
    For issues flagged by the script (and for checks the script cannot do, like contradictions and claim verification), read the relevant `.md` files across `wiki/` and its thematic subfolders. Exclude `index.md` and `log.md` from topic checks.

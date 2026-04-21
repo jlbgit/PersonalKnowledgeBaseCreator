@@ -5,7 +5,7 @@ A template for building your own **compounding, AI-maintained personal knowledge
 ## What You Get
 
 - **3 AI skills** — `compile-wiki`, `ask-wiki`, and `lint-wiki` — that run directly inside your IDE
-- **One-command setup** — a single script that symlinks the skills into your AI platform's directory
+- **One-command setup** — symlink skills into your AI platform's directory, with **global** (default) or **local** scope
 - **Zero external dependencies** — plain Markdown files, no databases, no vector stores, no servers
 - **Obsidian-ready** — the `wiki/` folder is a pre-configured vault with graph view, backlinks, and tag pane
 - **Cross-platform** — works on macOS, Linux, and Windows; supports Cursor, Claude Code, and GitHub Copilot
@@ -38,10 +38,11 @@ Each time you run `/compile-wiki`, the AI reads only the **unprocessed** files i
 git clone git@github.com:jlbgit/PersonalKnowledgeBaseCreator.git MyKnowledgeBase
 cd MyKnowledgeBase
 chmod +x setup.sh
-./setup.sh cursor          # for Cursor IDE
-./setup.sh claude          # for Claude Code
-./setup.sh copilot         # for VS Code / GitHub Copilot
-./setup.sh cursor claude   # multiple platforms at once
+./setup.sh cursor                # Cursor: global scope (default)
+./setup.sh cursor global         # explicit global — same as above
+./setup.sh claude global         # Claude Code
+./setup.sh copilot global        # VS Code / GitHub Copilot
+./setup.sh cursor claude global  # multiple platforms at once
 ```
 
 **Windows (PowerShell)**:
@@ -50,8 +51,11 @@ chmod +x setup.sh
 git clone git@github.com:jlbgit/PersonalKnowledgeBaseCreator.git MyKnowledgeBase
 cd MyKnowledgeBase
 .\setup.ps1 cursor
-.\setup.ps1 cursor, claude   # multiple platforms at once
+.\setup.ps1 cursor global
+.\setup.ps1 cursor, claude global
 ```
+
+**Scopes:** `global` (default) installs skills and writes `wiki-config.md` next to those skills (e.g. `~/.cursor/skills/wiki-config.md`) so paths point at this clone — use `/ask-wiki` and `/compile-wiki` from **any** open project. `local` scaffolds a wiki in the **current directory** (see [Project-local wikis](#project-local-wikis) below).
 
 > **Windows note:** Symlinks require Developer Mode (`Settings > System > For developers`). The script falls back to copying files if unavailable — just re-run it after `git pull` to update.
 
@@ -75,6 +79,23 @@ Open the repo in your AI assistant and say:
 
 Open the `wiki/` folder as an **Obsidian vault**. Use the Graph view to explore your knowledge network.
 
+## Using your wiki from other projects
+
+After `./setup.sh cursor global` (or `claude` / `copilot`), the skills read **`wiki-config.md`** next to the installed skills. It stores absolute paths to **Wiki root**, **Wiki folder**, **Raw folder**, and **Output folder** for this clone. Open any other repository in Cursor (or your assistant) and run `/ask-wiki` or `/compile-wiki` — the agent resolves your global wiki without that repo containing a `wiki/` folder.
+
+## Project-local wikis
+
+To keep a **separate** wiki inside another project (e.g. one codebase = one wiki), `cd` into that project and run the setup script **from your clone** of this template:
+
+```bash
+cd /path/to/YourOtherProject
+/path/to/PersonalKnowledgeBaseCreator/setup.sh cursor local
+```
+
+This symlinks the skills (if needed) and creates in **that** directory: `raw/`, `output/`, `wiki/` (with starter `index.md`, `log.md`, and `.obsidian/`), `AGENTS.md`, `lint_graph.js` (so `/lint-wiki` can run with cwd set to this folder), and a **`wiki-config.md` in the project root**.
+
+**Precedence:** if the open workspace contains `wiki-config.md` at its root, the skills use that (**local**) and ignore the global file next to the skills. Remove or rename the local file to fall back to global.
+
 ## The Three Skills
 
 | Skill | Trigger | What it does |
@@ -91,8 +112,8 @@ PersonalKnowledgeBaseCreator/
 ├── README.md              ← this file
 ├── LICENSE
 ├── .gitignore             ← raw/, output/, and user wiki content stay local
-├── setup.sh               ← macOS/Linux installer
-├── setup.ps1              ← Windows installer
+├── setup.sh               ← macOS/Linux installer (global | local)
+├── setup.ps1              ← Windows installer (global | local)
 ├── lint_graph.js          ← zero-dependency graph linter (Node.js)
 ├── raw/                   ← drop source files here (gitignored, stays local)
 ├── output/                ← generated reports land here (gitignored, stays local)
@@ -104,6 +125,11 @@ PersonalKnowledgeBaseCreator/
     ├── index.md           ← master topic index
     ├── log.md             ← processing audit trail
     └── .obsidian/         ← pre-configured vault settings
+
+# After setup (not in this repo — paths depend on your machine):
+
+~/.cursor/skills/          ← symlinks to skills/ + wiki-config.md (global install)
+YourOtherProject/          ← optional: wiki-config.md at repo root (local install)
 ```
 
 ## Examples
@@ -134,7 +160,7 @@ The graph below shows an example knowledge graph in Obsidian (you can also use o
 .\setup.ps1 -Uninstall cursor
 ```
 
-This removes only the symlinks from your platform's skill directory. Your wiki and data are untouched.
+This removes the skill symlinks (or copies) and the **global** `wiki-config.md` next to them. Your wiki clone and any **local** `wiki-config.md` inside other projects are untouched — delete a local `wiki-config.md` yourself if you no longer want that project to override the global wiki.
 
 ## Credits
 
