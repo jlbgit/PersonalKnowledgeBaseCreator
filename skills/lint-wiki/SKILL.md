@@ -5,7 +5,7 @@ description: Run the monthly health check on the LLM wiki. Flags contradictions,
 
 # Lint Knowledge Base Wiki
 
-This skill performs the critical self-healing step for the LLM wiki, preventing errors from compounding over time and ensuring the Obsidian graph remains clean.
+This skill performs the critical self-healing step for the LLM wiki, preventing errors from compounding over time and ensuring the wiki graph remains clean and well-structured.
 
 ## Instructions
 
@@ -59,6 +59,9 @@ When the user asks you to run a health check, lint the wiki, or clean up:
    - **Merge Redundancies:** If the script flagged possible duplicates, or you find two files covering the same topic (e.g., "Evaluating LLMs" and "LLM Evaluation"), merge them into one, delete the duplicate, and update all links to point to the new file.
    - **Rescue Orphans:** For pages flagged as orphans, add `[[wiki-links]]` to integrate them into the graph.
    - **Fix Unexplained Topics:** For dangling links, create brief stub pages or fix the links.
+   - **Flag Tooling/Meta Nodes:** Check for `[[wiki-links]]` that reference this system's own operational tooling or skills (e.g., "compile-wiki", "lint-wiki", "ask-wiki", "AGENTS.md", "schema file"). These are not knowledge topics and should be plain text, not links. Remove the `[[ ]]` wrapper from any such references.
+   - **Prune Hub Pollution:** Count inbound links (in-degree) for every page. Any page receiving links from more than ~40% of all topic pages is a suspected hub. For each suspected hub, review every page that links to it and ask: *"Is this page specifically about the hub topic's mechanism or a direct novel application of it?"* If the link is incidental (e.g., a building control paper linking to a generic "LLM Agents" page just because an LLM was used), remove the `[[link]]` and leave the concept as plain text. Report the before/after in-degree for each pruned hub.
+   - **Flag Over-Linked Pages:** Pages with more than 6 outgoing `[[wiki-links]]` should be reviewed. For each, keep only the 2–5 most conceptually significant links — those where the target topic is essential to understanding the source page. Demote the rest to plain text. The goal is a graph with clear cluster structure, not a hairball where everything is 1–2 hops from everything else.
    - **Index Sync:** For any mismatches between `wiki/index.md` and the actual topic files, add missing entries or remove stale ones.
 
 8. **Log the Pass and Save the Report:**

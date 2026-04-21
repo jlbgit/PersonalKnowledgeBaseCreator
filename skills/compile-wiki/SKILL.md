@@ -26,9 +26,9 @@ When the user asks you to update the wiki, process new files, or compile the wik
 
 1a. **Decide on Batch Size (do this before reading any file content):**
    Count the unprocessed files and estimate load:
-   - **Small load (≤ 3 files, all appear short/lightweight):** Process all in one pass — skip to step 2.
-   - **Medium load (4–8 files, or any single file is a long PDF/article):** Process in batches of **3 files** per run.
-   - **Large load (> 8 files, or multiple long documents):** Process in batches of **2 files** per run.
+   - **Small load (≤ 4 files, all appear short/lightweight):** Process all in one pass — skip to step 2.
+   - **Medium load (5–10 files, or any single file is a long PDF/article):** Process in batches of **5 files** per run.
+   - **Large load (> 10 files, or multiple long documents):** Process in batches of **4 files** per run.
 
    When batching:
    - Pick the **oldest unprocessed files first** (by filename or modification date).
@@ -57,8 +57,12 @@ When the user asks you to update the wiki, process new files, or compile the wik
      - `methods:` — include when the source names specific technologies or techniques worth indexing
    - **Body structure:** After `# Title`, write a **2–4 paragraph extended summary** (~250–300 words) covering what, why, and how. Then add **`## Key Takeaways`** with up to **10** bullets (concrete concepts, results, or implications — not vague restatements of the summary). Add any further sections (e.g. Ecosystem, Integration) with `[[wiki-links]]`.
    - Every wiki file MUST end with a **`## Sources`** section whose entries include at least one **clickable** markdown link per source (primary URL, DOI, or arXiv as available).
-   - **Linking philosophy:** Link pages whenever the topics are genuinely related — building a rich, navigable knowledge graph is a primary goal. Cross-domain links are encouraged when the connection is real (e.g., an LLM paper applied to building control should link to both AI and building energy topics). The text inside `[[ ]]` must match the target page's filename (without `.md`); ensure the target page exists in `wiki/` or will be created in this same compile run. If a related concept deserves linking but has no page yet, **create a brief stub page** (frontmatter + 1-paragraph summary) rather than leaving a dangling link or omitting the connection.
-   - **Actively look for link opportunities:** When creating or updating a page, scan the existing `wiki/` file tree and compare it against the concepts discussed. Every significant topical relationship should be expressed as a `[[link]]`, not just mentioned in prose. A well-linked page typically has 3–8 outgoing links. When updating an existing page with new source material, also check whether the new information creates connections to pages that weren't linked before.
+   - **Linking philosophy — quality over quantity:** Link pages when the connection is specific and meaningful — when someone reading page A would genuinely benefit from navigating to page B to deepen their understanding of A's content. A well-linked page typically has **2–5 outgoing links** targeting the most conceptually significant relationships. Cross-domain links are valuable when the connection is a core contribution (e.g., an LLM paper whose main novelty is its application to building control should link to both AI and building energy topics). The text inside `[[ ]]` must match the target page's filename (without `.md`); ensure the target page exists in `wiki/` or will be created in this same compile run. If a related concept deserves linking but has no page yet, **create a brief stub page** (frontmatter + 1-paragraph summary) rather than leaving a dangling link or omitting the connection.
+   - **Avoid hub pollution:** Do not link to broad umbrella concepts (e.g., "LLM Agents", "Machine Learning") unless the page's content is specifically about that concept's mechanism or a direct, novel application of it. A building control paper that *happens to use* an LLM should not link to a generic LLM Agents page — only link if the LLM agent architecture itself is a core contribution. Hub nodes that everything links to destroy graph structure and make ask-wiki traversal inefficient.
+   - **NEVER wiki-link to operational tooling:** Do not wrap this system's own skills, infrastructure, or meta-concepts about the wiki workflow in `[[ ]]` (e.g., never link to "compile-wiki", "lint-wiki", "ask-wiki", "AGENTS.md", or "schema file"). These are operational tooling, not knowledge topics — linking them pollutes the Obsidian graph with non-knowledge nodes. Mention them in plain text if relevant.
+
+   **Link verification (mandatory final step before updating index/log):**
+   After writing all pages for the current batch, collect every `[[wiki-link]]` target across all files you created or edited. For each target, verify that a `.md` file with that exact filename exists somewhere in `wiki/`. If any target is missing, either create a stub page for it now or remove the link. Never leave dangling `[[links]]`.
 
 4. **Update the Index and Log:**
    - Update `wiki/index.md` to include any new topics with a one-line description (Do NOT use `[[wiki-links]]` in the index so it doesn't clutter the Obsidian graph).
@@ -83,6 +87,6 @@ If you process `Energy_Systems.pdf` (a paper titled "Physics-Constrained Neural 
     - HVAC simulation
   ```
 - Ensure the body has the 2–4 paragraph extended summary, `## Key Takeaways` (up to 10 bullets), further sections, and `## Sources` with a clickable DOI link.
-- After scanning the existing wiki file tree, add `[[wiki-links]]` to related pages (existing or created in this same run). If a related concept has no page yet, create a stub (frontmatter + 1-paragraph summary) so the link resolves.
+- Add 2–5 `[[wiki-links]]` to closely related pages (existing or created in this same run), focusing on the most meaningful conceptual relationships. If a related concept has no page yet, create a stub (frontmatter + 1-paragraph summary) so the link resolves. Avoid linking to broad umbrella topics unless the relationship is a core contribution.
 - Update `wiki/index.md` with descriptions for both new pages.
 - Log the file in `wiki/log.md`.
