@@ -11,6 +11,16 @@ This skill formalizes the "Question -> Answer -> Save" loop. It instructs the AI
 
 When the user asks a question, requests a briefing, or asks you to find gaps in the knowledge base using this skill:
 
+0. **Resolve Paths (always do this first):**
+   First, check if a `wiki-config.md` exists in the current workspace root
+   (this indicates a project-local wiki). If not found, read
+   `wiki-config.md` from the same directory as this skill (e.g.,
+   `~/.cursor/skills/wiki-config.md`) for the global wiki. The file
+   contains four absolute paths labelled **Wiki root**, **Wiki folder**,
+   **Raw folder**, and **Output folder**. Use these paths everywhere below
+   instead of the relative `wiki/`, `raw/`, and `output/` defaults.
+   If neither file exists, fall back to relative paths from the workspace root.
+
 1. **Explore the Knowledge Base (Graph Traversal):**
    - **Start Token-Efficiently:** First, scan `wiki/index.md` to identify the entry-point nodes (topics) directly relevant to the user's query.
    - **Traverse the Knowledge Graph:** Read the entry-point `.md` files in `wiki/` (which may live in thematic subfolders like `wiki/Building Energy/`) and follow their internal `[[wiki-links]]` to navigate to related concepts. Obsidian resolves links regardless of subfolder, so search for the target filename across all subfolders. Follow links instead of blindly searching the entire `wiki/` directory, staying within the cluster relevant to the query (e.g., a query about "Token Optimization" should not touch "HVAC Control" pages). Apply these traversal rules:
