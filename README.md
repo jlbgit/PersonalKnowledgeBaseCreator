@@ -1,4 +1,4 @@
-# Personal Knowledge Base Creator (v1.1.3)
+# Personal Knowledge Base Creator (v1.1.4)
 
 A template for building an **AI-maintained personal knowledge base**, based on [Andrej Karpathy's LLM Wiki pattern](https://x.com/karpathy/status/2039805659525644595). Drop source files into a `raw/` folder; your AI assistant (Cursor, Claude Code, or VS Code/Copilot) turns them into a structured, cross-linked wiki of plain Markdown files — and keeps compounding knowledge as you add more.
 
