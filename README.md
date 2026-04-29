@@ -1,23 +1,24 @@
 # Personal Knowledge Base Creator (v1.1.3)
 
-A template for building your own **compounding, AI-maintained personal knowledge base** — inspired by [Andrej Karpathy's LLM Wiki pattern](https://x.com/karpathy/status/2039805659525644595). Drop in raw notes, papers, or articles and let your AI assistant (Cursor, Claude Code, or VS Code/Copilot) transform them into a structured, interlinked wiki of plain Markdown files you can browse in any editor.
+A template for building an **AI-maintained personal knowledge base**, based on [Andrej Karpathy's LLM Wiki pattern](https://x.com/karpathy/status/2039805659525644595). Drop source files into a `raw/` folder; your AI assistant (Cursor, Claude Code, or VS Code/Copilot) turns them into a structured, cross-linked wiki of plain Markdown files — and keeps compounding knowledge as you add more.
 
 ## What You Get
 
-Most personal knowledge workflows stop at storage. This one goes further: the AI reads *across* your notes, finds connections, and builds a structured, cross-linked graph that grows with every new source you add.
+### From Karpathy's pattern
 
-**No vector databases. No embeddings servers. No external API keys.** Everything runs inside your IDE — Cursor, Claude Code, or GitHub Copilot — using your existing subscription. Three slash commands, plain Markdown files, nothing else to configure.
+- **Plain Markdown, no external tooling** — no vector databases, no embeddings servers, no extra API keys; the `wiki/` folder is just files you can open in any editor
+- **Uses your existing LLM** — everything runs through your Cursor, Claude Code, or VS Code/Copilot subscription; nothing extra to sign up for or pay for
+- **Compounding knowledge** — the AI reads *across* your notes, extracts concepts, and connects them into a growing graph; the more you add, the richer the connections
 
-- **Skill-driven and IDE-native** — `/compile-wiki`, `/ask-wiki`, and `/lint-wiki` run as slash commands directly inside Cursor, Claude Code, or VS Code/Copilot; no separate tools or services
-- **No extra costs or API keys** — uses your existing IDE plan; nothing to sign up for or pay for separately
-- **Automatic linking** — `compile-wiki` identifies related concepts across all your notes and connects them with `[[wiki-links]]`, so the knowledge graph emerges without manual curation
-- **Graph-based retrieval** — `ask-wiki` follows wiki-links to traverse related pages; the LLM reads a compact index first, then drills into only the pages it needs — the full wiki never has to fit in context at once; works **locally** inside a single project or **globally** across all your projects, pointing at one central KB on your machine
-- **Token-efficient by design** — because only a relevant slice of the wiki is loaded per query, context stays lean even as the knowledge base grows; informal trials on a real personal KB showed roughly **~50% fewer tokens for small corpora** and up to **~90% reduction for large ones** compared to loading raw sources directly¹
-- **Private by default** — `raw/` and `output/` are gitignored; your notes stay on your machine
-- **Plain Markdown, no tooling required** — the `wiki/` folder is just files; open it in any editor, IDE, or note-taking app; an optional [Obsidian](https://obsidian.md) vault config is included for graph view and backlinks, but Obsidian is not required
-- **One-command setup** — symlink skills into your AI platform's directory with **global** (default) or **local** scope; works on macOS, Linux, and Windows
+### What this implementation adds
 
-> ¹ These figures come from informal trials on my real knowledge base, not a formal RAG evaluation. Results will vary with corpus size, source density, and topic overlap. A proper evaluation (precision/recall, RAG benchmarks) could be added later — contributions welcome.
+- **Automatic wiki derivation** — add files to `raw/`, note your topics in `AGENTS.md`, run `/compile-wiki`; the agent extracts summaries, identifies relations between concepts, and builds the cross-linked graph — no manual prompting or curation required
+- **Agentic graph retrieval** — `/ask-wiki` instructs the agent to traverse the `[[wiki-links]]` graph rather than loading all sources at once: it reads a compact index first, then follows links to only the pages it needs; informal trials showed roughly **50–90% fewer tokens** compared to querying raw files directly (results vary with corpus size and topic overlap¹)
+- **Global and local scope** — a global install makes your wiki accessible from any project on your machine; a local install scopes a separate wiki to a single repo; particularly useful for pulling accumulated domain knowledge into new projects without duplicating files
+- **Easy setup** — `setup.sh` / `setup.ps1` symlinks the three skills into your IDE's skill directory in one command; alternatively, copy the `SKILL.md` files manually if you prefer
+- **Obsidian-ready** — an optional vault config is included for graph view and backlinks; any Markdown editor works without it
+
+> ¹ Informal trials on a real personal KB, not a formal RAG evaluation. Results will vary with corpus size, source density, and topic overlap. A proper evaluation (precision/recall, RAG benchmarks) could be added later — contributions welcome.
 
 ## How It Works
 
@@ -68,7 +69,7 @@ cd MyKnowledgeBase
 
 > **Windows note:** Symlinks require Developer Mode (`Settings > System > For developers`). The script falls back to copying files if unavailable — just re-run it after `git pull` to update.
 
-> **Your data stays private.** The setup script automatically disconnects your clone from the template repository so you can't accidentally push personal content back. Your `raw/` files, `output/` reports, and any wiki pages you generate are all gitignored. To back up your knowledge base, add your own remote: `git remote add origin <your-repo-url>`.
+> **Backing up your wiki:** The setup script automatically disconnects your clone from the template repository. Your `raw/` files, `output/` reports, and generated wiki pages are all gitignored. To back up your knowledge base, add your own remote: `git remote add origin <your-repo-url>`.
 
 ### 2. Personalize
 
