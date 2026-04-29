@@ -87,7 +87,27 @@ Open the repo in your AI assistant and say:
 
 ### 5. Explore your wiki
 
-The `wiki/` folder is plain Markdown — open it in any editor or IDE. If you use [Obsidian](https://obsidian.md), open it as a vault to get graph view, backlinks, and tag browsing out of the box.
+**a) Query it in your IDE**
+
+Ask questions using `/ask-wiki`. The skill uses *agentic graph retrieval*: it reads `index.md` first to get a compact map of all topics, then follows `[[wiki-links]]` to load only the pages relevant to your question — the full wiki never needs to fit in context at once. Some questions to try (swap in your own topics):
+
+> *"Summarize the main approaches to building energy optimization I've collected. What gaps am I missing?"*
+
+> *"How do multi-agent LLM systems relate to the agentic AI patterns I've been reading about?"*
+
+> *"Which papers or sources connect Model Predictive Control to machine learning methods?"*
+
+> *"Give me a research briefing on token optimization techniques across all my notes."*
+
+> *"What do I know about confounding bias and causal inference? How does it connect to double machine learning?"*
+
+Each query saves a report to `output/` and feeds new insights back into the wiki — so the knowledge base keeps compounding.
+
+**b) Visualize the graph in Obsidian (optional)**
+
+Open the `wiki/` folder as a vault in [Obsidian](https://obsidian.md) to browse the knowledge graph visually. Node colors represent topic clusters; edges are the `[[wiki-links]]` the AI built. Any other Markdown editor works too — Obsidian is not required.
+
+![Example knowledge graph](example/example_knowledge_graph.png)
 
 ## Using your wiki from other projects
 
@@ -111,7 +131,7 @@ This symlinks the skills (if needed) and creates in **that** directory: `raw/`, 
 | Skill | Trigger | What it does |
 |---|---|---|
 | `compile-wiki` | `/compile-wiki` | Processes new `raw/` files → creates/updates wiki pages → updates index and log |
-| `ask-wiki` | `/ask-wiki` | Answers questions using only your wiki → saves report to `output/` → re-integrates insights |
+| `ask-wiki` | `/ask-wiki` | Answers questions via agentic graph retrieval (reads index → follows `[[wiki-links]]` to relevant pages only) → saves report to `output/` → re-integrates insights |
 | `lint-wiki` | `/lint-wiki` | Health check: frontmatter validation, dangling links, orphan pages, duplicate topics, index sync, contradiction detection, new topic suggestions |
 
 ## Scale & Practical Limits
@@ -122,7 +142,7 @@ These numbers come directly from Karpathy's original gist — *"this works surpr
 
 ### Why the pattern doesn't need everything in one context window
 
-The skills use an **index-first** strategy: at query or lint time the LLM reads `index.md` (a compact catalog of all pages) and then drills into the specific pages it needs. The full wiki never has to fit in context at once — only the index plus a handful of pages do. This is why 400,000 words of accumulated knowledge is achievable even on models with 200K-token windows.
+The skills use *agentic graph retrieval*: at query or lint time the agent reads `index.md` (a compact catalog of all pages) and then follows `[[wiki-links]]` to load only the specific pages it needs. The full wiki never has to fit in context at once — only the index plus a handful of relevant pages do. This is why 400,000 words of accumulated knowledge is achievable even on models with 200K-token windows.
 
 ### Practical limits for Cursor plan LLMs (Sonnet, Opus, GPT-5.4, Kimi, Composer…)
 
@@ -168,26 +188,6 @@ PersonalKnowledgeBaseCreator/
 ~/.cursor/skills/          ← symlinks to skills/ + wiki-config.md (global install)
 YourOtherProject/          ← optional: wiki-config.md at repo root (local install)
 ```
-
-## Examples
-
-Once your wiki is populated, `/ask-wiki` lets you query across everything you've read. Here are some questions to try — swap in your own topics:
-
-> *"Summarize the main approaches to building energy optimization I've collected. What gaps am I missing?"*
-
-> *"How do multi-agent LLM systems relate to the agentic AI patterns I've been reading about?"*
-
-> *"Which papers or sources connect Model Predictive Control to machine learning methods?"*
-
-> *"Give me a research briefing on token optimization techniques across all my notes."*
-
-> *"What do I know about confounding bias and causal inference? How does it connect to double machine learning?"*
-
-Each query saves a report to `output/` and feeds new insights back into the wiki — so the knowledge base keeps compounding.
-
-The graph below shows an example knowledge graph visualised in Obsidian. Node colors represent topic clusters; edges are `[[wiki-links]]` extracted by the AI.
-
-![Example knowledge graph](example/example_knowledge_graph.png)
 
 ## Uninstalling
 
