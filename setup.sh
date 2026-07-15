@@ -168,6 +168,13 @@ LOG
         echo "  lint_graph.js → already exists (skipped)"
     fi
 
+    if [ ! -f "$local_root/export_okf.js" ] && [ -f "$REPO_DIR/export_okf.js" ]; then
+        cp "$REPO_DIR/export_okf.js" "$local_root/export_okf.js"
+        echo "  export_okf.js → copied from template (for OKF export)"
+    elif [ -f "$local_root/export_okf.js" ]; then
+        echo "  export_okf.js → already exists (skipped)"
+    fi
+
     if [ ! -d "$local_root/wiki/.obsidian" ] && [ -d "$REPO_DIR/wiki/.obsidian" ]; then
         cp -R "$REPO_DIR/wiki/.obsidian" "$local_root/wiki/.obsidian"
         echo "  wiki/.obsidian/ → copied from template"

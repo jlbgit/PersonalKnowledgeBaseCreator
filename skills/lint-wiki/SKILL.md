@@ -68,5 +68,8 @@ When the user asks you to run a health check, lint the wiki, or clean up:
    - Append a row to `wiki/log.md` detailing the timestamp of the health check and a summary of actions taken (e.g., "Linting Pass: Flagged 1 contradiction, merged 2 redundancies, suggested 3 new topics").
    - Save the full lint report as a `.md` file in the `output/` directory (e.g., `output/Lint Report - YYYY-MM-DD.md`).
 
+9. **(Optional) Refresh the OKF export:**
+   If the user wants a portable [Open Knowledge Format](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) bundle for external tooling, run `node export_okf.js` from **Wiki root** (same directory as `lint_graph.js`). It non-destructively regenerates `output/okf/` — rewriting `[[wiki-links]]` into bundle-relative markdown links and adding OKF `resource`/`timestamp` aliases — leaving the native `wiki/` untouched. Skip unless asked; the native wiki is the source of truth.
+
 ## Output
 Provide the user with a markdown summary of the health check results, including the 3 suggested new articles, any contradictions/unbacked claims found, frontmatter issues, and unprocessed raw files.

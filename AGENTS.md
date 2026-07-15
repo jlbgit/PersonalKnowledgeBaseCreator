@@ -49,6 +49,7 @@ Every topic `.md` file MUST have valid YAML frontmatter including:
 - **`date_added:`** — Required. ISO 8601 date (`YYYY-MM-DD`) when this entry was added to the wiki (not the source publication date).
 - **`url:`** — Optional. Primary source URL for quick access and Obsidian Dataview (webpage, article, arXiv, DOI link). Omit for synthesized concept pages without one main source.
 - **`methods:`** — Optional. List of technologies, tools, frameworks, or experimental/lab methods named in the source (e.g., Neo4j, FastAPI, MCP). Omit when not applicable.
+- **`description:`** — Optional. A single-sentence summary of the page. OKF-recommended field (see "Open Knowledge Format (OKF)" below); useful for Dataview and OKF consumers. Omit if the `# Title` + first paragraph already make the page self-describing.
 
 ### Page structure
 - Every extracted topic gets its own `.md` file in `wiki/` (thematic subfolders encouraged).
@@ -60,6 +61,25 @@ Every topic `.md` file MUST have valid YAML frontmatter including:
 - Maintain an `index.md` in `wiki/` that lists every topic with a one-line description (Do NOT use `[[wiki-links]]` in the index to prevent it from becoming a massive, cluttered hub node in Obsidian).
 - Maintain a `log.md` in `wiki/` to track which raw files have been processed and when.
 - When new raw sources are added, synthesize and update the relevant wiki articles without destroying existing knowledge.
+
+## Open Knowledge Format (OKF)
+
+This wiki is compatible with Google's [Open Knowledge Format (OKF)](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing) — a portable markdown-plus-YAML standard ([SPEC.md v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md), [reference implementation](https://github.com/GoogleCloudPlatform/knowledge-catalog/tree/main/okf)) that lets external tooling (e.g. Google's Knowledge Catalog and its HTML graph visualizer) consume a knowledge bundle.
+
+**Native conformance.** OKF's single *required* field is a non-empty `type:` on every non-reserved page — which this wiki already enforces on all pages (see `lint_graph.js`), with reserved `index.md`/`log.md` present. `wiki/index.md` declares `okf_version: "0.1"`. Our frontmatter maps directly onto OKF's *recommended* fields:
+
+| This wiki | OKF field | Notes |
+|---|---|---|
+| `title` | `title` | as-is |
+| `type` | `type` | required by both; our enum values are valid OKF type strings |
+| `tags` | `tags` | as-is |
+| `url` | `resource` | URI of the underlying source |
+| `date_added` | `timestamp` | ISO 8601 |
+| `description` | `description` | optional single-sentence summary |
+
+**The one gap: links.** We link concepts with Obsidian `[[wiki-links]]`, which OKF consumers do not parse (OKF reads standard markdown / bundle-relative links). The native vault keeps `[[wiki-links]]` (for Obsidian + agentic graph retrieval); a portable OKF view is produced *non-destructively* on demand.
+
+**Generate the portable bundle:** `node export_okf.js` writes a derived OKF bundle to `output/okf/` — it rewrites `[[wiki-links]]` into bundle-relative markdown links, adds the OKF `resource`/`timestamp` aliases, and linkifies the index. The native `wiki/` is never modified, and Obsidian never opens `output/okf/`.
 
 ## My Interests / Focus Areas
 <!-- Replace these example topics with YOUR own focus areas.

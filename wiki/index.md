@@ -1,3 +1,7 @@
+---
+okf_version: "0.1"
+---
+
 # Knowledge Base Index
 
 Welcome to your compounding knowledge base! This file serves as the master taxonomy of all topics extracted from your raw files.

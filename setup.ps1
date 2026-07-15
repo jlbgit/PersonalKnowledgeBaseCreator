@@ -218,6 +218,16 @@ This log tracks which files from the ``raw/`` folder have been processed and whe
         Write-Host "  lint_graph.js -> already exists (skipped)"
     }
 
+    $okfSrc = Join-Path $RepoDir "export_okf.js"
+    $okfDst = Join-Path $localRoot "export_okf.js"
+    if (-not (Test-Path $okfDst) -and (Test-Path $okfSrc)) {
+        Copy-Item $okfSrc $okfDst
+        Write-Host "  export_okf.js -> copied from template (for OKF export)"
+    }
+    elseif (Test-Path $okfDst) {
+        Write-Host "  export_okf.js -> already exists (skipped)"
+    }
+
     $obsSrc = Join-Path $RepoDir "wiki\.obsidian"
     $obsDst = Join-Path $localRoot "wiki\.obsidian"
     if (-not (Test-Path $obsDst) -and (Test-Path $obsSrc)) {

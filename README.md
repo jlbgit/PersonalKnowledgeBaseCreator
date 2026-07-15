@@ -1,4 +1,4 @@
-# Personal Knowledge Base Creator (v1.1.4)
+# Personal Knowledge Base Creator (v1.2.0)
 
 A template for building an **AI-maintained personal knowledge base**, based on [Andrej Karpathy's LLM Wiki pattern](https://x.com/karpathy/status/2039805659525644595). Drop source files into a `raw/` folder; your AI assistant (Cursor, Claude Code, or VS Code/Copilot) turns them into a structured, cross-linked wiki of plain Markdown files — and keeps compounding knowledge as you add more.
 
@@ -17,6 +17,7 @@ A template for building an **AI-maintained personal knowledge base**, based on [
 - **Global and local scope** — a global install makes your wiki accessible from any project on your machine; a local install scopes a separate wiki to a single repo; particularly useful for pulling accumulated domain knowledge into new projects without duplicating files
 - **Easy setup** — `setup.sh` / `setup.ps1` symlinks the three skills into your IDE's skill directory in one command; alternatively, copy the `SKILL.md` files manually if you prefer
 - **Obsidian-ready** — an optional vault config is included for graph view and backlinks; any Markdown editor works without it
+- **Open Knowledge Format (OKF) aligned** — the wiki natively conforms to Google's [Open Knowledge Format](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing); `node export_okf.js` emits a portable OKF bundle for external tooling (e.g. Google's Knowledge Catalog and its graph visualizer) without touching your native vault — see [Open Knowledge Format (OKF)](#open-knowledge-format-okf) below
 
 > ¹ Informal trials on a real personal KB, not a formal RAG evaluation. Results will vary with corpus size, source density, and topic overlap. A proper evaluation (precision/recall, RAG benchmarks) could be added later — contributions welcome.
 
@@ -122,7 +123,7 @@ cd /path/to/YourOtherProject
 /path/to/PersonalKnowledgeBaseCreator/setup.sh cursor local
 ```
 
-This symlinks the skills (if needed) and creates in **that** directory: `raw/`, `output/`, `wiki/` (with starter `index.md`, `log.md`, and `.obsidian/`), `AGENTS.md`, `lint_graph.js` (so `/lint-wiki` can run with cwd set to this folder), and a **`wiki-config.md` in the project root**.
+This symlinks the skills (if needed) and creates in **that** directory: `raw/`, `output/`, `wiki/` (with starter `index.md`, `log.md`, and `.obsidian/`), `AGENTS.md`, `lint_graph.js` (so `/lint-wiki` can run with cwd set to this folder), `export_okf.js` (so `node export_okf.js` can produce an OKF bundle from this folder), and a **`wiki-config.md` in the project root**.
 
 **Precedence:** if the open workspace contains `wiki-config.md` at its root, the skills use that (**local**) and ignore the global file next to the skills. Remove or rename the local file to fall back to global.
 
@@ -133,6 +134,48 @@ This symlinks the skills (if needed) and creates in **that** directory: `raw/`, 
 | `compile-wiki` | `/compile-wiki` | Processes new `raw/` files → creates/updates wiki pages → updates index and log |
 | `ask-wiki` | `/ask-wiki` | Answers questions via agentic graph retrieval (reads index → follows `[[wiki-links]]` to relevant pages only) → saves report to `output/` → re-integrates insights |
 | `lint-wiki` | `/lint-wiki` | Health check: frontmatter validation, dangling links, orphan pages, duplicate topics, index sync, contradiction detection, new topic suggestions |
+
+## Open Knowledge Format (OKF)
+
+The wiki is compatible with Google's **[Open Knowledge Format (OKF)](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing)** ([SPEC.md v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md)) — a portable markdown-plus-YAML standard for sharing knowledge bundles with external tooling such as Google's Knowledge Catalog and its HTML graph visualizer.
+
+Conformance is **native**: OKF's only required field is a non-empty `type:` on every page, which this wiki already enforces, and its frontmatter maps directly onto OKF's recommended fields (`url` → `resource`, `date_added` → `timestamp`, plus optional `description`). The only difference is linking — the native vault uses Obsidian `[[wiki-links]]` (for graph view and agentic retrieval), whereas OKF consumers read standard markdown links.
+
+### Exporting a portable OKF bundle
+
+`export_okf.js` is a zero-dependency Node script (like `lint_graph.js` — no `npm install`, no config). It reads `wiki/` and writes a derived OKF bundle to `output/okf/`, **without modifying your native vault**. From the repo root:
+
+```bash
+node export_okf.js
+```
+
+It prints a short report, e.g.:
+
+```
+=== OKF Export (v0.1) ===
+Bundle: output/okf/
+Pages exported: 68   Links rewritten: 135
+
+SKIPPED (not OKF-conformant, left out of bundle)
+  (none — all pages exported)
+
+UNRESOLVED [[links]] (rendered as plain text)
+  (none — all links resolved)
+```
+
+For each page it: rewrites `[[wiki-links]]` (and `[[Target|Alias]]`) into bundle-relative markdown links like `[Model Context Protocol](/Agentic%20AI/Model%20Context%20Protocol.md)`; adds the OKF `resource`/`timestamp` aliases alongside your existing frontmatter; and generates a navigable `output/okf/index.md` (declaring `okf_version: "0.1"`) plus a copy of `log.md`. Links inside inline code (`` `[[like-this]]` ``) and any page missing a `type:` are deliberately skipped and reported.
+
+**Notes on using it:**
+- **Re-run any time** — the bundle is a build artifact; each run cleans and regenerates `output/okf/`, so run it again after `/compile-wiki` to refresh.
+- **Stays local** — `output/` is gitignored, so the bundle is never committed; regenerate it wherever you need it.
+- **Consume it** — point OKF-aware tooling (e.g. Google's Knowledge Catalog or the reference HTML graph visualizer in [knowledge-catalog/okf](https://github.com/GoogleCloudPlatform/knowledge-catalog/tree/main/okf)) at `output/okf/`, or share the folder as a self-contained bundle.
+
+See the **Open Knowledge Format (OKF)** section in `AGENTS.md` for the full field mapping.
+
+**References:**
+- [How the Open Knowledge Format can improve data sharing](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing) — Google Cloud announcement
+- [OKF specification (SPEC.md v0.1)](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) — the format definition
+- [knowledge-catalog/okf](https://github.com/GoogleCloudPlatform/knowledge-catalog/tree/main/okf) — reference implementation, samples, and HTML visualizer
 
 ## Scale & Practical Limits
 
@@ -172,6 +215,7 @@ PersonalKnowledgeBaseCreator/
 ├── setup.sh               ← macOS/Linux installer (global | local)
 ├── setup.ps1              ← Windows installer (global | local)
 ├── lint_graph.js          ← zero-dependency graph linter (Node.js)
+├── export_okf.js          ← zero-dependency Open Knowledge Format exporter → output/okf/
 ├── raw/                   ← drop source files here (gitignored, stays local)
 ├── output/                ← generated reports land here (gitignored, stays local)
 ├── skills/
